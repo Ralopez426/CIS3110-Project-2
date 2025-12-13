@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Computer Store Sales Dashboard</title>
+    <style>
+        /* global box-sizing and reset to avoid overflow */
+        * { box-sizing: border-box; }
+        html, body { height: 100%; margin: 0; padding: 0; }
+
+        /* --- 1. Custom Bootstrap-like Grid CSS --- */
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px 0;
+            padding-top: 104px; /* header height (72) + some breathing room (32) */
+        }
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;               /* slightly smaller gap so 3 columns fit */
+            align-items: flex-start;
+            justify-content: flex-start;
+            margin: 0;
+        }
+        /* Use flex-basis so widths account for gaps and avoid wrapping */
+        .col-12 { flex: 0 0 100%; max-width: 100%; }
+        .col-8  { flex: 0 0 calc(66.666% - 8px); max-width: calc(66.666% - 8px); }
+        .col-4  { flex: 0 0 calc(33.333% - 8px); max-width: calc(33.333% - 8px); }
+
+        /* Make grid responsive on narrow screens */
+        @media (max-width: 800px) {
+            .col-8, .col-4 { flex: 0 0 100%; max-width: 100%; }
+        }
+
+        /* --- 2. Chart Styling for Visual Demonstration --- */
+        .chart-container {
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        .chart-box {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            /* use flexible height so charts don't overflow; limit max-height */
+            min-height: 220px;
+            max-height: 520px;
+            padding: 0;               /* remove chart-box inner padding so header aligns */
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: stretch;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            overflow: hidden; /* hide any accidental overflow */
+        }
+
+        /* header above each chart with top border */
+        .chart-header {
+            border-top: 3px solid #343a40;
+            padding: 8px 10px;
+            text-align: center;
+            font-weight: 600;
+            background: #fff;
+            margin-bottom: 8px;
+            border-top-left-radius: 6px;
+            border-top-right-radius: 6px;
+            color: #343a40;
+        }
+
+        .chart-box .chart-content {
+            padding: 12px;           /* restore interior padding for canvas area */
+            flex: 1 1 auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Ensure the canvas fills the space but stays within max height */
+        canvas {
+            width: 100% !important;
+            height: auto !important;
+            max-height: 360px;      /* cap height so it doesn't grow too large */
+            display: block;
+        }
+        /* allow canvas to grow inside the flex column, but respect max-height */
+        .chart-box > .chart-content > canvas {
+            flex: 1 1 auto;
+            align-self: stretch;
+        }
+
+        /* fixed header locked to top with centered title and bottom border */
+        .site-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 72px; /* increased from 56px */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #000;                 /* black background */
+            color: #fff;                      /* white text */
+            border-bottom: 3px solid #343a40; /* border locked to top edge */
+            z-index: 1000;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+        }
+        .site-header h1 {
+            margin: 0;
+            font-size: 1.6rem; /* increased from 1.1rem */
+            font-weight: 600;
+            padding: 8px 16px;
+            line-height: 1;
+        }
+    </style>
+</head>
+<body>
+    <!-- fixed, centered header -->
+    <header class="site-header">
+        <h1>Computer Parts Store Sales Analytics Dashboard</h1>
+    </header>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-8 chart-container">
+                <div class="chart-box">
+                    <div class="chart-header">Top 5 Products by Total Revenue</div>
+                    <div class="chart-content">
+                        <canvas id="productValueChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-4 chart-container">
+                <div class="chart-box">
+                    <div class="chart-header">Units Sold by Product Category</div>
+                    <div class="chart-content">
+                        <canvas id="inventoryMixChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-4 chart-container">
+                <div class="chart-box">
+                    <div class="chart-header">Store Performance by Total Revenue</div>
+                    <div class="chart-content">
+                        <canvas id="locationPerformanceChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-4 chart-container">
+                <div class="chart-box">
+                    <div class="chart-header">Customer Spending Distribution</div>
+                    <div class="chart-content">
+                        <canvas id="customerLoyaltyChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-4 chart-container">
+                <div class="chart-box">
+                    <div class="chart-header">Daily Total Revenue Trend</div>
+                    <div class="chart-content">
+                        <canvas id="salesPerformanceChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <script src="charts.js"></script>
+</body>
+</html>
